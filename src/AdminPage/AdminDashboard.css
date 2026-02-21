@@ -484,6 +484,18 @@ body {
     color: #000;
     position: relative;
     overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+    border: none;
+}
+
+.shimmer-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px var(--admin-gold-glow);
+}
+
+.shimmer-btn:active {
+    transform: translateY(1px);
 }
 
 .shimmer-btn::after {
@@ -497,10 +509,10 @@ body {
             rgba(255, 255, 255, 0.3),
             transparent);
     transform: rotate(45deg);
-    animation: shimmer 3s infinite;
+    animation: shimmer-slide 3s infinite;
 }
 
-@keyframes shimmer {
+@keyframes shimmer-slide {
     0% {
         transform: translateX(-150%) rotate(45deg);
     }
@@ -683,4 +695,119 @@ body {
 .net-badge.l3 {
     color: #10B981;
     border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Admin Action Buttons */
+.admin-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+}
+
+.btn-approve {
+    background: rgba(0, 230, 118, 0.1);
+    color: var(--admin-success);
+    border-color: rgba(0, 230, 118, 0.2);
+}
+
+.btn-approve:hover {
+    background: var(--admin-success);
+    color: #000;
+}
+
+.btn-reject {
+    background: rgba(255, 77, 77, 0.1);
+    color: var(--admin-danger);
+    border-color: rgba(255, 77, 77, 0.2);
+}
+
+.btn-reject:hover {
+    background: var(--admin-danger);
+    color: #000;
+}
+
+/* Admin Input & Search Styles */
+.search-bar-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    padding: 0 14px;
+    width: 100%;
+    max-width: 400px;
+    transition: 0.3s;
+}
+
+.search-bar-wrapper:focus-within {
+    border-color: var(--admin-gold);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 15px rgba(245, 197, 24, 0.1);
+}
+
+.search-icon {
+    color: var(--admin-text-dim);
+    margin-right: 12px;
+}
+
+.search-input-prime,
+.admin-input-prime {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 12px 0;
+    width: 100%;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.admin-input-prime {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    transition: 0.3s;
+}
+
+.admin-input-prime:focus {
+    border-color: var(--admin-gold);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.form-group-admin {
+    margin-bottom: 1.5rem;
+}
+
+.form-group-admin label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--admin-text-dim);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.admin-search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Scrollbar for Admin Tables */
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: var(--admin-border);
+    border-radius: 10px;
 }

@@ -54,7 +54,7 @@ body {
   filter: drop-shadow(0 0 8px var(--accent-gold-glow));
 }
 
-@keyframes shimmer {
+@keyframes shimmer-bg-gold {
   0% {
     background-position: -200% 0;
   }
@@ -67,11 +67,37 @@ body {
 .shimmer-btn {
   background: var(--accent-gold);
   background-size: 200% auto;
-  transition: 0.3s;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
 }
 
 .shimmer-btn:hover {
-  animation: shimmer 1.5s infinite;
-  transform: scale(1.05);
-  box-shadow: 0 0 20px var(--accent-gold-glow);
+  animation: shimmer-bg-gold 1.5s infinite;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--accent-gold-glow);
+}
+
+.shimmer-btn:active {
+  transform: translateY(1px);
+  filter: brightness(0.9);
+}
+
+.btn-primary {
+  background: var(--accent-gold);
+  color: #05090C !important;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(1);
 }

@@ -651,11 +651,11 @@ const AdminDashboard = () => {
                             <div className="admin-content-card">
                                 <div className="card-header">
                                     <h3>Platform Ledger</h3>
-                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                         <button className="btn-outline-small">Export History</button>
-                                        <div style={{ position: 'relative' }}>
-                                            <Search size={14} style={{ position: 'absolute', left: 10, top: 12, color: 'var(--admin-text-dim)' }} />
-                                            <input type="text" placeholder="Filter ID..." className="admin-input-prime" style={{ padding: '8px 12px 8px 32px', fontSize: '0.8rem', width: '150px' }} />
+                                        <div className="search-bar-wrapper" style={{ maxWidth: '200px' }}>
+                                            <Search size={16} className="search-icon" />
+                                            <input type="text" placeholder="Filter ID..." className="search-input-prime" />
                                         </div>
                                     </div>
                                 </div>

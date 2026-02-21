@@ -167,13 +167,7 @@
     margin-top: 1.5rem;
 }
 
-.btn-primary {
-    padding: 12px 24px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-}
+/* btn-primary now global in index.css */
 
 .btn-outline {
     padding: 12px 24px;
