@@ -71,7 +71,7 @@ const runMigrations = async () => {
         console.error('Migration error:', err);
     }
 };
-runMigrations();
+// Migrations moved to local listener block
 
 const app = express();
 
@@ -93,9 +93,17 @@ app.use('/api/support', require('./routes/supportRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 
 app.get('/', (req, res) => {
-    res.send('DHANKI API is running...');
+    res.json({ message: 'DHANKI API is running...', status: 'Online' });
 });
 
-const PORT = process.env.PORT || 5000;
+// Run listener only when not in Vercel environment
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+        console.log(`Server running locally on port ${PORT}`);
+        // Run migrations only in local environment to avoid Vercel timeouts
+        runMigrations();
+    });
+}
 
-app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
+module.exports = app;
