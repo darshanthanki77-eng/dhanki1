@@ -4,7 +4,11 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 
 // Connect to Database
-connectDB();
+if (!process.env.MONGO_URI) {
+    console.error('CRITICAL: MONGO_URI is not defined in environment variables!');
+} else {
+    connectDB();
+}
 
 // Temporary Migration: Promote admin users and sync referrals
 const User = require('./models/User');
