@@ -210,7 +210,7 @@ const Dashboard = () => {
                     <div className="logo-icon">
                         <Zap size={24} fill="#05090C" />
                     </div>
-                    <span className="logo-text gold-glow-text">DHANKI</span>
+                    <span className="logo-text gold-glow-text">DHANIK</span>
                 </div>
 
                 <nav className="nav-menu">
@@ -289,22 +289,20 @@ const Dashboard = () => {
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
                                     >
-                                        Welcome, <span className="gold-glow-text">{user?.name || 'Dhanki User'}</span>
+                                        Welcome, <span className="gold-glow-text">{user?.name || 'Dhanik User'}</span>
                                     </motion.h1>
-                                    <p>Start your journey with Dhanki Tokenomics and earn consistent rewards.</p>
+                                    <p>Start your journey with Dhanik Tokenomics and earn consistent rewards.</p>
 
                                     <div className="wallet-actions">
                                         <button
-                                            className={`btn-primary shimmer-btn ${isWalletConnected ? 'connected' : ''}`}
+                                            className={`btn-primary shimmer-btn wallet-btn ${isWalletConnected ? 'connected' : ''}`}
                                             onClick={handleConnectWallet}
                                         >
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <Wallet size={18} />
-                                                {isWalletConnected ? 'Connected' : 'Connect Wallet'}
-                                            </div>
+                                            <Wallet size={18} />
+                                            {isWalletConnected ? '✓ Wallet Connected' : 'Connect Wallet'}
                                         </button>
                                         {isWalletConnected && (
-                                            <button className="btn-outline" onClick={handleDisconnect}>Disconnect</button>
+                                            <button className="btn-outline disconnect-btn" onClick={handleDisconnect}>Disconnect</button>
                                         )}
                                     </div>
 
@@ -376,7 +374,7 @@ const Dashboard = () => {
                             {/* Token Overview Cards */}
                             <div className="overview-grid">
                                 {[
-                                    { label: 'Dhanki Token Balance', value: `${user?.wallet?.dhanki || 0} DHANKI`, icon: <Coins />, subValue: `≈ $${((user?.wallet?.dhanki || 0) * 0.01).toFixed(2)}`, path: '/buy-token' },
+                                    { label: 'Dhanik Token Balance', value: `${user?.wallet?.dhanki || 0} DHANKI`, icon: <Coins />, subValue: `≈ $${((user?.wallet?.dhanki || 0) * 0.01).toFixed(2)}`, path: '/buy-token' },
                                     { label: 'Registration Date', value: new Date(user?.createdAt).toLocaleDateString(), icon: <TrendingUp />, subValue: 'Active Member', path: '/profile' },
                                     { label: 'User Status', value: user?.status || 'Active', icon: <Globe />, subValue: 'Verified Account', path: '/profile' }
                                 ].map((stat, index) => (
@@ -480,10 +478,11 @@ const Dashboard = () => {
 
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '2rem' }}>
                                             <button
-                                                className="btn-primary shimmer-btn"
+                                                className="btn-primary shimmer-btn claim-rewards-btn"
                                                 style={{ width: '100%' }}
                                                 onClick={() => navigate('/level-income')}
                                             >
+                                                <ArrowUpRight size={18} />
                                                 Claim Rewards
                                             </button>
                                         </div>
@@ -496,10 +495,11 @@ const Dashboard = () => {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                                     <h2>Referral Structure (3-Levels)</h2>
                                     <button
-                                        className="btn-primary shimmer-btn"
-                                        style={{ padding: '8px 16px', fontSize: '0.8rem' }}
+                                        className="btn-primary shimmer-btn manage-team-btn"
+                                        style={{ padding: '10px 20px', fontSize: '0.82rem', gap: '6px' }}
                                         onClick={() => navigate('/referral')}
                                     >
+                                        <Users size={15} />
                                         Manage Team
                                     </button>
                                 </div>

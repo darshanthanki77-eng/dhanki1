@@ -811,3 +811,107 @@ body {
     background: var(--admin-border);
     border-radius: 10px;
 }
+
+/* Labeled Action Buttons (User Management Table) */
+.admin-action-row {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.action-btn-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 13px;
+    border-radius: 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+
+.action-btn-label.edit {
+    background: rgba(0, 229, 255, 0.08);
+    color: var(--admin-neon-blue);
+    border-color: rgba(0, 229, 255, 0.2);
+}
+
+.action-btn-label.edit:hover {
+    background: var(--admin-neon-blue);
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0, 229, 255, 0.3);
+}
+
+.action-btn-label.network {
+    background: rgba(139, 92, 246, 0.1);
+    color: #A78BFA;
+    border-color: rgba(139, 92, 246, 0.25);
+}
+
+.action-btn-label.network:hover {
+    background: #8B5CF6;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+}
+
+.action-btn-label.ban {
+    background: rgba(255, 77, 77, 0.08);
+    color: var(--admin-danger);
+    border-color: rgba(255, 77, 77, 0.2);
+}
+
+.action-btn-label.ban:hover {
+    background: var(--admin-danger);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(255, 77, 77, 0.3);
+}
+
+.action-btn-label.unban {
+    background: rgba(0, 230, 118, 0.08);
+    color: var(--admin-success);
+    border-color: rgba(0, 230, 118, 0.2);
+}
+
+.action-btn-label.unban:hover {
+    background: var(--admin-success);
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0, 230, 118, 0.3);
+}
+
+/* Select styling for admin modals */
+select.admin-input-prime {
+    appearance: none;
+    -webkit-appearance: none;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: white;
+    width: 100%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+select.admin-input-prime:focus {
+    border-color: var(--admin-gold);
+    outline: none;
+}
+
+select.admin-input-prime option {
+    background: #0d1b2e;
+    color: white;
+}
+
+/* Fix form-group margin inside grid */
+.form-group-admin {
+    margin-bottom: 0;
+}

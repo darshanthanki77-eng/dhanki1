@@ -163,6 +163,7 @@ const AdminDashboard = () => {
 
     const [userModal, setUserModal] = useState(null);
     const [editForm, setEditForm] = useState({});
+    const [userSearch, setUserSearch] = useState('');
 
     const openUserModal = (type, user) => {
         setUserModal({ type, user });
@@ -170,9 +171,60 @@ const AdminDashboard = () => {
             setEditForm({
                 name: user.name || '',
                 email: user.email || '',
+                phone: user.phone || '',
+                walletAddress: user.walletAddress || '',
+                status: user.status || 'Active',
                 dhanki: user.wallet?.dhanki || 0,
+                inrBalance: user.wallet?.inrBalance || 0,
+                totalInvestment: user.totalInvestment || 0,
             });
         }
+    };
+
+    // Export users as CSV
+    const exportUsersCSV = () => {
+        const headers = ['Name', 'Email', 'Referral ID', 'Status', 'INR Balance', 'DHT Balance', 'Total Investment', 'Total Withdrawal', 'L1', 'L2', 'L3'];
+        const rows = users.map(u => [
+            u.name || '',
+            u.email || '',
+            u.referralId || '',
+            u.status || 'Active',
+            u.wallet?.inrBalance || 0,
+            u.wallet?.dhanki || 0,
+            u.totalInvestment || 0,
+            u.totalWithdrawal || 0,
+            u.referrals?.l1Count || 0,
+            u.referrals?.l2Count || 0,
+            u.referrals?.l3Count || 0,
+        ]);
+        const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `users_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click(); URL.revokeObjectURL(url);
+    };
+
+    // Export transactions as CSV
+    const exportTransactionsCSV = () => {
+        const headers = ['User', 'Email', 'Type', 'Amount', 'Currency', 'Tokens', 'TX ID', 'Status', 'Date'];
+        const rows = transactions.map(tx => [
+            tx.user?.name || 'System',
+            tx.user?.email || '',
+            tx.type || '',
+            tx.amount || 0,
+            tx.currency || 'INR',
+            tx.tokens || '',
+            tx.transactionId || tx.txHash || '',
+            tx.status || '',
+            new Date(tx.createdAt).toLocaleString(),
+        ]);
+        const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `transactions_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click(); URL.revokeObjectURL(url);
     };
 
     const handleSaveUserEdit = async () => {
@@ -182,12 +234,23 @@ const AdminDashboard = () => {
             const res = await fetch(`http://localhost:5000/api/admin/users/${user._id}/edit`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify(editForm)
+                body: JSON.stringify({
+                    name: editForm.name,
+                    email: editForm.email,
+                    phone: editForm.phone,
+                    walletAddress: editForm.walletAddress,
+                    status: editForm.status,
+                    dhanki: parseFloat(editForm.dhanki) || 0,
+                    totalInvestment: parseFloat(editForm.totalInvestment) || 0,
+                })
             });
             if (res.ok) {
                 alert('User updated successfully!');
                 setUserModal(null);
                 fetchAdminData();
+            } else {
+                const err = await res.json();
+                alert(err.message || 'Update failed');
             }
         } catch { alert('Server error'); }
     };
@@ -465,8 +528,9 @@ const AdminDashboard = () => {
                                         <div className="card-header">
                                             <h3>Revenue vs Expenditure (Premium View)</h3>
                                             <div style={{ display: 'flex', gap: '8px' }}>
-                                                <button className="icon-btn-utility"><Download size={18} /></button>
-                                                <button className="btn-primary shimmer-btn" style={{ padding: '8px 16px' }}>Export Detailed CSV</button>
+                                                <button className="btn-primary shimmer-btn" style={{ padding: '8px 18px', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={exportTransactionsCSV}>
+                                                    <Download size={15} /> Export CSV
+                                                </button>
                                             </div>
                                         </div>
                                         <div style={{ padding: '30px' }}>
@@ -582,9 +646,17 @@ const AdminDashboard = () => {
                                 <div className="card-header admin-search-header">
                                     <div className="search-bar-wrapper">
                                         <Search size={18} className="search-icon" />
-                                        <input type="text" placeholder="Search accounts..." className="search-input-prime" />
+                                        <input
+                                            type="text"
+                                            placeholder="Search by name, email or ID..."
+                                            className="search-input-prime"
+                                            value={userSearch}
+                                            onChange={e => setUserSearch(e.target.value)}
+                                        />
                                     </div>
-                                    <button className="btn-primary" style={{ padding: '10px 20px' }}><UserPlus size={18} /> New User</button>
+                                    <button className="btn-primary shimmer-btn" style={{ padding: '10px 20px', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={exportUsersCSV}>
+                                        <Download size={16} /> Export CSV
+                                    </button>
                                 </div>
                                 <div className="table-responsive">
                                     <table className="admin-table">
@@ -593,52 +665,59 @@ const AdminDashboard = () => {
                                                 <th>User Profile</th>
                                                 <th>Assets Detail</th>
                                                 <th>Activity Stats</th>
-                                                <th>Network (L1/L2/L3)</th>
                                                 <th>Status</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {users.map((user, i) => (
-                                                <tr key={user._id || i}>
-                                                    <td>
-                                                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                                                            <div className="admin-avatar" style={{ borderRadius: '12px' }}>{user.name?.[0]}</div>
-                                                            <div>
-                                                                <p style={{ fontWeight: 700 }}>{user.name}</p>
-                                                                <p style={{ fontSize: '0.72rem', color: 'var(--admin-text-dim)' }}>ID: {user.referralId}</p>
+                                            {users
+                                                .filter(u => {
+                                                    const q = userSearch.toLowerCase();
+                                                    return !q || (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q) || (u.referralId || '').toLowerCase().includes(q);
+                                                })
+                                                .map((user, i) => (
+                                                    <tr key={user._id || i}>
+                                                        <td>
+                                                            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                                                <div className="admin-avatar" style={{ borderRadius: '12px' }}>{user.name?.[0]}</div>
+                                                                <div>
+                                                                    <p style={{ fontWeight: 700 }}>{user.name}</p>
+                                                                    <p style={{ fontSize: '0.72rem', color: 'var(--admin-text-dim)' }}>ID: {user.referralId}</p>
+                                                                    <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>{user.email}</p>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="assets-cell">
-                                                            <div className="main-balance">₹{(user.wallet?.inrBalance || 0).toLocaleString()}</div>
-                                                            <div className="sub-asset gold">{user.wallet?.dhanki?.toLocaleString() || 0} DHT</div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="tx-stat-cell">
-                                                            <div className="tx-in">+{user.totalInvestment || 0} In</div>
-                                                            <div className="tx-out">-{user.totalWithdrawal || 0} Out</div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="network-badge-row">
-                                                            <span className="net-badge l1">L1: {user.referrals?.l1Count || 0}</span>
-                                                            <span className="net-badge l2">L2: {user.referrals?.l2Count || 0}</span>
-                                                            <span className="net-badge l3">L3: {user.referrals?.l3Count || 0}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td><span className={`status-badge status-${(user.status || 'Active').toLowerCase()}`}>{user.status || 'Active'}</span></td>
-                                                    <td>
-                                                        <div className="admin-action-row">
-                                                            <button className="action-icon-btn edit" onClick={() => openUserModal('edit', user)}><Edit size={16} /></button>
-                                                            <button className="action-icon-btn users" onClick={() => openUserModal('referrals', user)}><Users size={16} /></button>
-                                                            <button className="action-icon-btn ban" onClick={() => handleUserAction(user._id, user.status === 'Banned' ? 'Active' : 'Banned')}><Ban size={16} /></button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                                        </td>
+                                                        <td>
+                                                            <div className="assets-cell">
+                                                                <div className="main-balance">₹{(user.wallet?.inrBalance || 0).toLocaleString()}</div>
+                                                                <div className="sub-asset gold">{(user.wallet?.dhanki || 0).toLocaleString()} DHT</div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div className="tx-stat-cell">
+                                                                <div className="tx-in">+{(user.totalInvestment || 0).toLocaleString()} In</div>
+                                                                <div className="tx-out">-{(user.totalWithdrawal || 0).toLocaleString()} Out</div>
+                                                            </div>
+                                                        </td>
+                                                        <td><span className={`status-badge status-${(user.status || 'Active').toLowerCase()}`}>{user.status || 'Active'}</span></td>
+                                                        <td>
+                                                            <div className="admin-action-row">
+                                                                <button className="action-btn-label edit" onClick={() => openUserModal('edit', user)}>
+                                                                    <Edit size={14} /> Edit
+                                                                </button>
+                                                                <button className="action-btn-label network" onClick={() => openUserModal('referrals', user)}>
+                                                                    <Users size={14} /> Network
+                                                                </button>
+                                                                <button
+                                                                    className={`action-btn-label ${user.status === 'Banned' ? 'unban' : 'ban'}`}
+                                                                    onClick={() => handleUserAction(user._id, user.status === 'Banned' ? 'Active' : 'Banned')}
+                                                                >
+                                                                    <Ban size={14} /> {user.status === 'Banned' ? 'Unban' : 'Ban'}
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
                                         </tbody>
                                     </table>
                                 </div>
@@ -652,10 +731,13 @@ const AdminDashboard = () => {
                                 <div className="card-header">
                                     <h3>Platform Ledger</h3>
                                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                        <button className="btn-outline-small">Export History</button>
+                                        <button className="btn-primary shimmer-btn" style={{ padding: '8px 18px', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={exportTransactionsCSV}>
+                                            <Download size={15} /> Export CSV
+                                        </button>
                                         <div className="search-bar-wrapper" style={{ maxWidth: '200px' }}>
                                             <Search size={16} className="search-icon" />
-                                            <input type="text" placeholder="Filter ID..." className="search-input-prime" />
+                                            <input type="text" placeholder="Filter ID..." className="search-input-prime"
+                                                value={txSearch} onChange={e => setTxSearch(e.target.value)} />
                                         </div>
                                     </div>
                                 </div>
@@ -672,16 +754,23 @@ const AdminDashboard = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {transactions.map((tx, i) => (
-                                                <tr key={tx._id || i}>
-                                                    <td>{tx.user?.name || 'System'}</td>
-                                                    <td><span style={{ textTransform: 'capitalize' }}>{tx.type?.replace('_', ' ')}</span></td>
-                                                    <td style={{ fontWeight: 700 }}>{tx.amount?.toLocaleString()} {tx.currency}</td>
-                                                    <td><code style={{ fontSize: '0.7rem' }}>{tx.txHash?.substring(0, 12)}...</code></td>
-                                                    <td><span className={`status-badge status-${(tx.status || 'pending').toLowerCase()}`}>{tx.status}</span></td>
-                                                    <td style={{ fontSize: '0.8rem', color: 'var(--admin-text-dim)' }}>{new Date(tx.createdAt).toLocaleString()}</td>
-                                                </tr>
-                                            ))}
+                                            {transactions
+                                                .filter(tx => !txSearch || (tx.user?.name || '').toLowerCase().includes(txSearch.toLowerCase()) || (tx.transactionId || tx.txHash || '').toLowerCase().includes(txSearch.toLowerCase()))
+                                                .map((tx, i) => (
+                                                    <tr key={tx._id || i}>
+                                                        <td>
+                                                            <div>
+                                                                <p style={{ fontWeight: 700 }}>{tx.user?.name || 'System'}</p>
+                                                                <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>{tx.user?.referralId || ''}</p>
+                                                            </div>
+                                                        </td>
+                                                        <td><span style={{ textTransform: 'capitalize' }}>{tx.type?.replace('_', ' ')}</span></td>
+                                                        <td style={{ fontWeight: 700 }}>₹{tx.amount?.toLocaleString()} {tx.currency}</td>
+                                                        <td><code style={{ fontSize: '0.7rem' }}>{(tx.transactionId || tx.txHash || 'N/A').substring(0, 14)}...</code></td>
+                                                        <td><span className={`status-badge status-${(tx.status || 'pending').toLowerCase()}`}>{tx.status}</span></td>
+                                                        <td style={{ fontSize: '0.8rem', color: 'var(--admin-text-dim)' }}>{new Date(tx.createdAt).toLocaleString()}</td>
+                                                    </tr>
+                                                ))}
                                         </tbody>
                                     </table>
                                 </div>
@@ -733,7 +822,7 @@ const AdminDashboard = () => {
 
             {userModal && (
                 <div className="sidebar-overlay" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setUserModal(null)}>
-                    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} onClick={e => e.stopPropagation()} className="admin-content-card" style={{ width: '100%', maxWidth: userModal.type === 'referrals' ? '600px' : '450px', padding: '2.5rem' }}>
+                    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} onClick={e => e.stopPropagation()} className="admin-content-card" style={{ width: '100%', maxWidth: userModal.type === 'referrals' ? '560px' : '620px', padding: '2.5rem', maxHeight: '90vh', overflowY: 'auto' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                             <h3 style={{ margin: 0 }}>{userModal.type === 'edit' ? 'Commit User Overrides' : 'Network Hierarchy'}</h3>
                             <button onClick={() => setUserModal(null)} className="icon-btn-utility"><X size={18} /></button>
@@ -741,37 +830,106 @@ const AdminDashboard = () => {
 
                         {userModal.type === 'edit' ? (
                             <>
-                                <p style={{ color: 'var(--admin-text-dim)', fontSize: '0.85rem', marginBottom: '20px' }}>Modifying profile for {userModal.user?.name}</p>
-                                <div className="form-group-admin">
-                                    <label>DHT Token Balance (Override)</label>
-                                    <input type="number" className="admin-input-prime" value={editForm.dhanki} onChange={e => setEditForm({ ...editForm, dhanki: parseFloat(e.target.value) })} />
+                                <p style={{ color: 'var(--admin-text-dim)', fontSize: '0.85rem', marginBottom: '20px' }}>Modifying profile for <strong style={{ color: 'var(--admin-gold)' }}>{userModal.user?.name}</strong> · ID: {userModal.user?.referralId}</p>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                                    <div className="form-group-admin">
+                                        <label>Full Name</label>
+                                        <input type="text" className="admin-input-prime" placeholder="Full name" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} />
+                                    </div>
+                                    <div className="form-group-admin">
+                                        <label>Email Address</label>
+                                        <input type="email" className="admin-input-prime" placeholder="Email" value={editForm.email} onChange={e => setEditForm({ ...editForm, email: e.target.value })} />
+                                    </div>
+                                    <div className="form-group-admin">
+                                        <label>Phone Number</label>
+                                        <input type="text" className="admin-input-prime" placeholder="Phone" value={editForm.phone} onChange={e => setEditForm({ ...editForm, phone: e.target.value })} />
+                                    </div>
+                                    <div className="form-group-admin">
+                                        <label>Account Status</label>
+                                        <select className="admin-input-prime" value={editForm.status} onChange={e => setEditForm({ ...editForm, status: e.target.value })}>
+                                            <option value="Active">Active</option>
+                                            <option value="Inactive">Inactive</option>
+                                            <option value="Banned">Banned</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group-admin">
+                                        <label>DHT Token Balance</label>
+                                        <input type="number" className="admin-input-prime" placeholder="DHT amount" value={editForm.dhanki} onChange={e => setEditForm({ ...editForm, dhanki: e.target.value })} />
+                                    </div>
+                                    <div className="form-group-admin">
+                                        <label>Total Investment (₹)</label>
+                                        <input type="number" className="admin-input-prime" placeholder="Amount in INR" value={editForm.totalInvestment} onChange={e => setEditForm({ ...editForm, totalInvestment: e.target.value })} />
+                                    </div>
+                                    <div className="form-group-admin" style={{ gridColumn: '1 / -1' }}>
+                                        <label>Wallet Address</label>
+                                        <input type="text" className="admin-input-prime" placeholder="USDT/Crypto wallet address" value={editForm.walletAddress} onChange={e => setEditForm({ ...editForm, walletAddress: e.target.value })} />
+                                    </div>
                                 </div>
-                                <div style={{ display: 'flex', gap: '12px', marginTop: '2.5rem' }}>
+                                <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
                                     <button className="btn-outline" style={{ flex: 1 }} onClick={() => setUserModal(null)}>Cancel</button>
-                                    <button className="btn-primary shimmer-btn" style={{ flex: 1 }} onClick={handleSaveUserEdit}>Commit Changes</button>
+                                    <button className="btn-primary shimmer-btn" style={{ flex: 2 }} onClick={handleSaveUserEdit}>Commit Changes</button>
                                 </div>
                             </>
                         ) : (
                             <div className="referrals-view">
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', marginBottom: '25px' }}>
-                                    <div style={{ padding: '15px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '15px', textAlign: 'center', border: '1px solid rgba(139, 92, 246, 0.2)' }}>
-                                        <p style={{ fontSize: '0.7rem', color: '#8B5CF6', fontWeight: 700 }}>LEVEL 1</p>
-                                        <p style={{ fontSize: '1.4rem', fontWeight: 800 }}>{userModal.user?.referrals?.l1Count || 0}</p>
-                                    </div>
-                                    <div style={{ padding: '15px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '15px', textAlign: 'center', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
-                                        <p style={{ fontSize: '0.7rem', color: '#3B82F6', fontWeight: 700 }}>LEVEL 2</p>
-                                        <p style={{ fontSize: '1.4rem', fontWeight: 800 }}>{userModal.user?.referrals?.l2Count || 0}</p>
-                                    </div>
-                                    <div style={{ padding: '15px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '15px', textAlign: 'center', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                                        <p style={{ fontSize: '0.7rem', color: '#10B981', fontWeight: 700 }}>LEVEL 3</p>
-                                        <p style={{ fontSize: '1.4rem', fontWeight: 800 }}>{userModal.user?.referrals?.l3Count || 0}</p>
+                                {/* User identity header */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px', padding: '14px', background: 'rgba(255,255,255,0.03)', borderRadius: '14px', border: '1px solid var(--admin-border)' }}>
+                                    <div className="admin-avatar" style={{ width: 44, height: 44, fontSize: '1.1rem', borderRadius: '12px' }}>{userModal.user?.name?.[0]}</div>
+                                    <div>
+                                        <p style={{ fontWeight: 800, fontSize: '1rem' }}>{userModal.user?.name}</p>
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--admin-text-dim)' }}>ID: {userModal.user?.referralId} · {userModal.user?.email}</p>
                                     </div>
                                 </div>
-                                <div style={{ padding: '15px', background: 'var(--admin-card)', borderRadius: '15px', border: '1px solid var(--admin-border)' }}>
-                                    <p style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '10px' }}>Upline Connection</p>
-                                    <p style={{ fontSize: '0.8rem', color: 'var(--admin-text-dim)' }}>Referred By: <span style={{ color: 'var(--admin-gold)', fontWeight: 700 }}>{userModal.user?.referredBy || 'Direct Platform Signup'}</span></p>
+
+                                {/* Upline */}
+                                <div style={{ textAlign: 'center', marginBottom: '8px' }}>
+                                    <div style={{ display: 'inline-block', padding: '8px 20px', background: 'rgba(245,197,24,0.12)', borderRadius: '30px', border: '1px solid rgba(245,197,24,0.3)', fontSize: '0.8rem', fontWeight: 700, color: 'var(--admin-gold)' }}>
+                                        ↑ Referred By: {userModal.user?.referredBy || 'Direct Signup'}
+                                    </div>
                                 </div>
-                                <button className="btn-outline" style={{ width: '100%', marginTop: '20px' }} onClick={() => setUserModal(null)}>Close View</button>
+
+                                {/* Tree connector line */}
+                                <div style={{ textAlign: 'center', color: 'var(--admin-border)', lineHeight: '1', fontSize: '1.2rem' }}>│</div>
+                                <div style={{ textAlign: 'center', marginBottom: '4px' }}>
+                                    <div style={{ display: 'inline-block', padding: '6px 18px', background: 'rgba(139,92,246,0.15)', borderRadius: '20px', border: '1px solid rgba(139,92,246,0.3)', fontSize: '0.78rem', fontWeight: 800, color: '#A78BFA' }}>
+                                        ● {userModal.user?.name} (This User)
+                                    </div>
+                                </div>
+
+                                {/* Network levels grid */}
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', margin: '16px 0' }}>
+                                    <div style={{ padding: '16px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '14px', textAlign: 'center', border: '1px solid rgba(139, 92, 246, 0.25)' }}>
+                                        <p style={{ fontSize: '0.65rem', color: '#A78BFA', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '6px' }}>LEVEL 1</p>
+                                        <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#C4B5FD' }}>{userModal.user?.referrals?.l1Count || 0}</p>
+                                        <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Direct Referrals</p>
+                                    </div>
+                                    <div style={{ padding: '16px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '14px', textAlign: 'center', border: '1px solid rgba(59, 130, 246, 0.25)' }}>
+                                        <p style={{ fontSize: '0.65rem', color: '#60A5FA', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '6px' }}>LEVEL 2</p>
+                                        <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#93C5FD' }}>{userModal.user?.referrals?.l2Count || 0}</p>
+                                        <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Sub-Referrals</p>
+                                    </div>
+                                    <div style={{ padding: '16px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '14px', textAlign: 'center', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
+                                        <p style={{ fontSize: '0.65rem', color: '#34D399', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '6px' }}>LEVEL 3</p>
+                                        <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#6EE7B7' }}>{userModal.user?.referrals?.l3Count || 0}</p>
+                                        <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Deep Network</p>
+                                    </div>
+                                </div>
+
+                                {/* Total network summary */}
+                                <div style={{ padding: '14px', background: 'rgba(255,255,255,0.03)', borderRadius: '14px', border: '1px solid var(--admin-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div>
+                                        <p style={{ fontSize: '0.78rem', color: 'var(--admin-text-dim)' }}>Total Network Size</p>
+                                        <p style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--admin-gold)' }}>
+                                            {((userModal.user?.referrals?.l1Count || 0) + (userModal.user?.referrals?.l2Count || 0) + (userModal.user?.referrals?.l3Count || 0)).toLocaleString()} Members
+                                        </p>
+                                    </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <p style={{ fontSize: '0.78rem', color: 'var(--admin-text-dim)' }}>Referral Code</p>
+                                        <p style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--admin-neon-blue)' }}>{userModal.user?.referralId}</p>
+                                    </div>
+                                </div>
+
+                                <button className="btn-outline" style={{ width: '100%', marginTop: '16px' }} onClick={() => setUserModal(null)}>Close View</button>
                             </div>
                         )}
                     </motion.div>

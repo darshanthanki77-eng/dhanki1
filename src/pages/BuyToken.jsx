@@ -129,8 +129,8 @@ const BuyToken = () => {
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
                 <div>
-                    <h1>Buy <span className="gold-glow-text">Dhanki Token</span></h1>
-                    <p>Acquire Dhanki tokens instantly using USDT or INR.</p>
+                    <h1>Buy <span className="gold-glow-text">Dhanik Token</span></h1>
+                    <p>Acquire Dhanik tokens instantly using USDT or INR.</p>
                 </div>
                 <div className="price-tag">
                     <Activity size={16} />
@@ -165,7 +165,7 @@ const BuyToken = () => {
                                     It will be processed once verified.
                                 </p>
                                 <button
-                                    className="btn-primary shimmer-btn full-btn"
+                                    className="btn-primary full-btn"
                                     style={{ marginTop: '2rem' }}
                                     onClick={() => window.location.href = '/dashboard'}
                                 >
@@ -237,7 +237,7 @@ const BuyToken = () => {
                                     </div>
                                 </div>
 
-                                <button type="submit" className="btn-primary shimmer-btn full-btn">
+                                <button type="submit" className="btn-primary full-btn">
                                     Continue to Payment
                                     <ArrowRight size={20} />
                                 </button>
@@ -339,7 +339,7 @@ const BuyToken = () => {
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 >
                     <div className="token-details-card">
-                        <h3>Dhanki <span className="gold-glow-text">Tokenomics</span></h3>
+                        <h3>Dhanik <span className="gold-glow-text">Tokenomics</span></h3>
                         <div className="token-stat">
                             <span>Total Supply</span>
                             <span>20 Crore</span>
