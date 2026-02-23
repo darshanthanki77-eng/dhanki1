@@ -43,6 +43,7 @@ import {
     Tooltip, Legend, ResponsiveContainer, ComposedChart
 } from 'recharts';
 import './AdminDashboard.css';
+import API_BASE_URL from '../apiConfig';
 
 // Animated Counter Component
 const CountUp = ({ value, duration = 1.5 }) => {
@@ -92,10 +93,10 @@ const AdminDashboard = () => {
             const headers = { 'Authorization': `Bearer ${token}` };
 
             const [statsRes, usersRes, txRes, setRes] = await Promise.all([
-                fetch('http://localhost:5000/api/admin/stats', { headers }),
-                fetch('http://localhost:5000/api/admin/users', { headers }),
-                fetch('http://localhost:5000/api/admin/transactions', { headers }),
-                fetch('http://localhost:5000/api/admin/settings', { headers })
+                fetch('${API_BASE_URL}/api/admin/stats', { headers }),
+                fetch('${API_BASE_URL}/api/admin/users', { headers }),
+                fetch('${API_BASE_URL}/api/admin/transactions', { headers }),
+                fetch('${API_BASE_URL}/api/admin/settings', { headers })
             ]);
 
             if (statsRes.ok) setStats(await statsRes.json());
@@ -123,7 +124,7 @@ const AdminDashboard = () => {
     const handleTransactionAction = async (id, status) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/admin/transactions/${id}`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/transactions/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ status })
@@ -139,7 +140,7 @@ const AdminDashboard = () => {
         if (e) e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/admin/settings', {
+            const res = await fetch('${API_BASE_URL}/api/admin/settings', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(settings)
@@ -152,7 +153,7 @@ const AdminDashboard = () => {
         if (!window.confirm(`Change user status to "${status}"?`)) return;
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/admin/users/${id}/status`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/users/${id}/status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ status })
@@ -231,7 +232,7 @@ const AdminDashboard = () => {
         const { user } = userModal;
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/admin/users/${user._id}/edit`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/users/${user._id}/edit`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({
@@ -622,7 +623,7 @@ const AdminDashboard = () => {
                                                     <td><code style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', padding: '4px 8px', borderRadius: '6px' }}>{tx.transactionId || 'N/A'}</code></td>
                                                     <td>
                                                         {tx.paymentScreenshot ? (
-                                                            <button className="btn-outline-small" onClick={() => setProofImage('http://localhost:5000/uploads/' + tx.paymentScreenshot)}>View Proof</button>
+                                                            <button className="btn-outline-small" onClick={() => setProofImage('${API_BASE_URL}/uploads/' + tx.paymentScreenshot)}>View Proof</button>
                                                         ) : '—'}
                                                     </td>
                                                     <td>

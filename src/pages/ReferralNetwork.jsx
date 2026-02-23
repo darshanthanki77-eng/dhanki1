@@ -20,6 +20,7 @@ import {
     AlertCircle
 } from 'lucide-react';
 import './ReferralNetwork.css';
+import API_BASE_URL from '../apiConfig';
 import { useNavigate } from 'react-router-dom';
 
 const ReferralNetwork = () => {
@@ -40,7 +41,7 @@ const ReferralNetwork = () => {
                     return;
                 }
 
-                const response = await fetch('http://localhost:5000/api/referral/network', {
+                const response = await fetch('${API_BASE_URL}/api/referral/network', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 

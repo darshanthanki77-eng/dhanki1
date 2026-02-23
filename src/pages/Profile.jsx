@@ -19,6 +19,7 @@ import {
     Coins
 } from 'lucide-react';
 import './Profile.css';
+import API_BASE_URL from '../apiConfig';
 
 const Profile = () => {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
@@ -48,7 +49,7 @@ const Profile = () => {
     const fetchProfile = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/profile', {
+            const response = await fetch('${API_BASE_URL}/api/profile', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -69,7 +70,7 @@ const Profile = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/profile', {
+            const response = await fetch('${API_BASE_URL}/api/profile', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -104,7 +105,7 @@ const Profile = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/profile', {
+            const response = await fetch('${API_BASE_URL}/api/profile', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

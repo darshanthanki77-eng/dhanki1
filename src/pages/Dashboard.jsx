@@ -23,6 +23,7 @@ import {
     X
 } from 'lucide-react';
 import './Dashboard.css';
+import API_BASE_URL from '../apiConfig';
 import BuyToken from './BuyToken';
 import LevelIncome from './LevelIncome';
 import Support from './Support';
@@ -110,7 +111,7 @@ const Dashboard = () => {
                     return;
                 }
 
-                const response = await fetch('http://localhost:5000/api/profile', {
+                const response = await fetch(`${API_BASE_URL}/api/profile`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
