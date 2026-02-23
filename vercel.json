@@ -1,18 +1,16 @@
 {
     "version": 2,
-    "buildCommand": "npm run build",
-    "outputDirectory": "dist",
     "builds": [
-        {
-            "src": "backend/server.js",
-            "use": "@vercel/node"
-        },
         {
             "src": "package.json",
             "use": "@vercel/static-build",
             "config": {
                 "distDir": "dist"
             }
+        },
+        {
+            "src": "backend/server.js",
+            "use": "@vercel/node"
         }
     ],
     "routes": [
@@ -23,6 +21,13 @@
         {
             "src": "/uploads/(.*)",
             "dest": "backend/server.js"
+        },
+        {
+            "src": "/assets/(.*)",
+            "dest": "/assets/$1"
+        },
+        {
+            "handle": "filesystem"
         },
         {
             "src": "/(.*)",
