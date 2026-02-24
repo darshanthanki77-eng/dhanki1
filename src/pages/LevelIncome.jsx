@@ -26,10 +26,10 @@ const LevelIncome = () => {
             try {
                 const token = localStorage.getItem('token');
                 const [networkRes, historyRes] = await Promise.all([
-                    fetch('${API_BASE_URL}/api/referral/network', {
+                    fetch(`${API_BASE_URL}/api/referral/network`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
-                    fetch('${API_BASE_URL}/api/referral/income-history', {
+                    fetch(`${API_BASE_URL}/api/referral/income-history`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     })
                 ]);

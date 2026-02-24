@@ -93,10 +93,10 @@ const AdminDashboard = () => {
             const headers = { 'Authorization': `Bearer ${token}` };
 
             const [statsRes, usersRes, txRes, setRes] = await Promise.all([
-                fetch('${API_BASE_URL}/api/admin/stats', { headers }),
-                fetch('${API_BASE_URL}/api/admin/users', { headers }),
-                fetch('${API_BASE_URL}/api/admin/transactions', { headers }),
-                fetch('${API_BASE_URL}/api/admin/settings', { headers })
+                fetch(`${API_BASE_URL}/api/admin/stats`, { headers }),
+                fetch(`${API_BASE_URL}/api/admin/users`, { headers }),
+                fetch(`${API_BASE_URL}/api/admin/transactions`, { headers }),
+                fetch(`${API_BASE_URL}/api/admin/settings`, { headers })
             ]);
 
             if (statsRes.ok) setStats(await statsRes.json());
@@ -140,7 +140,7 @@ const AdminDashboard = () => {
         if (e) e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('${API_BASE_URL}/api/admin/settings', {
+            const res = await fetch(`${API_BASE_URL}/api/admin/settings`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(settings)
@@ -623,7 +623,7 @@ const AdminDashboard = () => {
                                                     <td><code style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', padding: '4px 8px', borderRadius: '6px' }}>{tx.transactionId || 'N/A'}</code></td>
                                                     <td>
                                                         {tx.paymentScreenshot ? (
-                                                            <button className="btn-outline-small" onClick={() => setProofImage('${API_BASE_URL}/uploads/' + tx.paymentScreenshot)}>View Proof</button>
+                                                            <button className="btn-outline-small" onClick={() => setProofImage(`${API_BASE_URL}/uploads/` + tx.paymentScreenshot)}>View Proof</button>
                                                         ) : '—'}
                                                     </td>
                                                     <td>

@@ -41,7 +41,7 @@ const ReferralNetwork = () => {
                     return;
                 }
 
-                const response = await fetch('${API_BASE_URL}/api/referral/network', {
+                const response = await fetch(`${API_BASE_URL}/api/referral/network`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
