@@ -1,13 +1,18 @@
-require('dotenv').config({ path: require('path').resolve(__dirname, '.env') });
+const path = require('path');
+// Only load dotenv in development. Vercel provides environment variables directly.
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config({ path: path.join(__dirname, '.env') });
+}
+
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');
 
 // Connect to Database
-if (!process.env.MONGO_URI) {
-    console.error('CRITICAL: MONGO_URI is not defined in environment variables!');
+const connectDB = require('./config/db');
+if (process.env.MONGO_URI) {
+    connectDB().catch(err => console.error('Database connection failed:', err));
 } else {
-    connectDB();
+    console.error('CRITICAL: MONGO_URI is not defined in environment variables!');
 }
 
 // Temporary Migration: Promote admin users and sync referrals
@@ -84,7 +89,6 @@ app.use(cors());
 app.use(express.json());
 
 // Serve uploaded proof screenshots
-const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes

@@ -7,9 +7,16 @@ const path = require('path');
 const fs = require('fs');
 const router = express.Router();
 
-// Multer setup — save screenshots to backend/uploads/
-const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+// Multer setup — save screenshots. Use /tmp on Vercel for local processing.
+const uploadDir = process.env.VERCEL ? '/tmp' : path.join(__dirname, '../uploads');
+
+if (!process.env.VERCEL && !fs.existsSync(uploadDir)) {
+    try {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    } catch (err) {
+        console.error('Failed to create upload directory:', err);
+    }
+}
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDir),
@@ -18,7 +25,10 @@ const storage = multer.diskStorage({
         cb(null, `proof_${Date.now()}${ext}`);
     }
 });
-const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }
+});
 
 // Public route - get platform settings (price, fees etc.) for the buy page
 router.get('/settings', async (req, res) => {
