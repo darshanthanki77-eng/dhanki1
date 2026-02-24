@@ -285,9 +285,6 @@ const AdminDashboard = () => {
 
     return (
         <div className="admin-container">
-            <div className="neon-accent accent-gold"></div>
-            <div className="neon-accent accent-purple"></div>
-
             {isSidebarOpen && window.innerWidth <= 1024 && (
                 <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>
             )}
@@ -710,6 +707,11 @@ const AdminDashboard = () => {
                                                                 <div>
                                                                     <p style={{ fontWeight: 700 }}>{user.name}</p>
                                                                     <p style={{ fontSize: '0.72rem', color: 'var(--admin-text-dim)' }}>ID: {user.referralId}</p>
+                                                                    <div className="network-badge-row">
+                                                                        <span className="net-badge l1" title="Level 1">L1: {user.referrals?.l1Count ?? user.referrals?.level1?.length ?? 0}</span>
+                                                                        <span className="net-badge l2" title="Level 2">L2: {user.referrals?.l2Count ?? user.referrals?.level2?.length ?? 0}</span>
+                                                                        <span className="net-badge l3" title="Level 3">L3: {user.referrals?.l3Count ?? user.referrals?.level3?.length ?? 0}</span>
+                                                                    </div>
                                                                     <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>{user.email}</p>
                                                                 </div>
                                                             </div>

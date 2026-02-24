@@ -276,8 +276,8 @@ body {
 .admin-stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    gap: 24px;
+    margin-bottom: 32px;
 }
 
 .admin-stat-card {
@@ -610,30 +610,7 @@ body {
     transform: scale(1.1);
 }
 
-/* Web3 Accents */
-.neon-accent {
-    position: absolute;
-    filter: blur(80px);
-    opacity: 0.15;
-    z-index: -1;
-    pointer-events: none;
-}
-
-.accent-gold {
-    top: 0;
-    right: 0;
-    width: 400px;
-    height: 400px;
-    background: var(--admin-gold);
-}
-
-.accent-purple {
-    bottom: 0;
-    left: 0;
-    width: 400px;
-    height: 400px;
-    background: var(--admin-neon-purple);
-}
+/* [Removed Neon Accents] */
 
 /* Restored User Management Specific Table Styles */
 .assets-cell,
