@@ -89,6 +89,16 @@ app.use(cors({
     origin: ['https://dhanik.vercel.app', 'http://localhost:5173', 'http://localhost:3000'],
     credentials: true
 }));
+// Middleware to ensure DB connection before handling requests
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        res.status(500).json({ message: 'Database connection error', error: err.message });
+    }
+});
+
 app.use(express.json());
 
 // Serve uploaded proof screenshots
