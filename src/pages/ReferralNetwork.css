@@ -627,6 +627,20 @@
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .quick-network-stats {
+        padding: 1rem;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .q-divider {
+        margin: 0 1rem;
+    }
+
+    .q-value {
+        font-size: 1.2rem;
+    }
+
     .team-premium-table th:nth-child(3),
     .team-premium-table td:nth-child(3),
     .team-premium-table th:nth-child(4),
@@ -634,5 +648,23 @@
     .team-premium-table th:nth-child(5),
     .team-premium-table td:nth-child(5) {
         display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .levels-scroller {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-stats-grid-prime {
+        grid-template-columns: 1fr;
+    }
+
+    .user-network-card {
+        padding: 1.5rem;
+    }
+
+    .network-header-prime h1 {
+        font-size: 1.8rem;
     }
 }

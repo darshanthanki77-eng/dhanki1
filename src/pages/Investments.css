@@ -301,4 +301,19 @@ td {
     td:nth-child(5) {
         display: none;
     }
+
+    .page-header h1 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-title {
+        font-size: 1.4rem;
+    }
+
+    .submit-btn {
+        padding: 14px;
+        font-size: 1rem;
+    }
 }

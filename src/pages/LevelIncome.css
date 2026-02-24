@@ -212,6 +212,12 @@
         grid-template-columns: 1fr;
     }
 
+    .section-header-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
     .premium-table th:nth-child(1),
     .premium-table td:nth-child(1),
     .premium-table th:nth-child(4),
@@ -219,5 +225,20 @@
     .premium-table th:nth-child(6),
     .premium-table td:nth-child(6) {
         display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .income-stat-card {
+        padding: 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+    }
+
+    .filter-btn {
+        width: 38px;
+        height: 38px;
     }
 }

@@ -202,6 +202,28 @@
     }
 }
 
+@media (max-width: 768px) {
+    .contact-card-prime {
+        padding: 1.5rem;
+    }
+
+    .quick-contact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .faq-question {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .support-status {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 /* ============================
    Full-width Premium Button
    ============================ */

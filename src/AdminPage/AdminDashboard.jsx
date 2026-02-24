@@ -288,12 +288,25 @@ const AdminDashboard = () => {
             <div className="neon-accent accent-gold"></div>
             <div className="neon-accent accent-purple"></div>
 
+            {isSidebarOpen && window.innerWidth <= 1024 && (
+                <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>
+            )}
+
             <aside className={`admin-sidebar ${isSidebarCollapsed ? 'sidebar-collapsed' : ''} ${isSidebarOpen ? 'sidebar-open' : ''}`}>
                 <div className="admin-logo">
                     <div className="logo-icon">
                         <ShieldCheck size={22} color="#000" />
                     </div>
                     <span className="logo-text">DHANIK ADMIN</span>
+                    {window.innerWidth <= 1024 && (
+                        <button
+                            className="icon-btn-utility"
+                            style={{ marginLeft: 'auto', background: 'transparent', border: 'none' }}
+                            onClick={() => setIsSidebarOpen(false)}
+                        >
+                            <X size={20} color="var(--admin-text-dim)" />
+                        </button>
+                    )}
                 </div>
 
                 <nav className="admin-nav">
@@ -329,12 +342,25 @@ const AdminDashboard = () => {
             <main className={`admin-main ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
                 <header className="admin-header">
                     <div className="header-left">
-                        <motion.h1 key={activeTab} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-                            {activeTab}
-                        </motion.h1>
-                        <p style={{ color: 'var(--admin-text-dim)', fontSize: '0.95rem', fontWeight: 500 }}>
-                            System Status: <span style={{ color: 'var(--admin-success)' }}>Operational</span>
-                        </p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                            {window.innerWidth <= 1024 && (
+                                <button
+                                    className="icon-btn-utility"
+                                    onClick={() => setIsSidebarOpen(true)}
+                                    style={{ background: 'var(--admin-card)', border: '1px solid var(--admin-border)' }}
+                                >
+                                    <Menu size={24} />
+                                </button>
+                            )}
+                            <div>
+                                <motion.h1 key={activeTab} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+                                    {activeTab}
+                                </motion.h1>
+                                <p style={{ color: 'var(--admin-text-dim)', fontSize: '0.95rem', fontWeight: 500 }}>
+                                    System Status: <span style={{ color: 'var(--admin-success)' }}>Operational</span>
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="header-right">
@@ -347,7 +373,7 @@ const AdminDashboard = () => {
                         </div>
                         <div className="admin-user-profile">
                             <div className="admin-avatar">AD</div>
-                            <div className="profile-info">
+                            <div className="profile-info desktop-only">
                                 <p style={{ fontWeight: 700, fontSize: '0.9rem' }}>Super Admin</p>
                                 <p style={{ fontSize: '0.72rem', color: 'var(--admin-text-dim)' }}>Administrator</p>
                             </div>
@@ -821,131 +847,135 @@ const AdminDashboard = () => {
                 </AnimatePresence>
             </main>
 
-            {userModal && (
-                <div className="sidebar-overlay" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setUserModal(null)}>
-                    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} onClick={e => e.stopPropagation()} className="admin-content-card" style={{ width: '100%', maxWidth: userModal.type === 'referrals' ? '560px' : '620px', padding: '2.5rem', maxHeight: '90vh', overflowY: 'auto' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                            <h3 style={{ margin: 0 }}>{userModal.type === 'edit' ? 'Commit User Overrides' : 'Network Hierarchy'}</h3>
-                            <button onClick={() => setUserModal(null)} className="icon-btn-utility"><X size={18} /></button>
-                        </div>
-
-                        {userModal.type === 'edit' ? (
-                            <>
-                                <p style={{ color: 'var(--admin-text-dim)', fontSize: '0.85rem', marginBottom: '20px' }}>Modifying profile for <strong style={{ color: 'var(--admin-gold)' }}>{userModal.user?.name}</strong> · ID: {userModal.user?.referralId}</p>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-                                    <div className="form-group-admin">
-                                        <label>Full Name</label>
-                                        <input type="text" className="admin-input-prime" placeholder="Full name" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} />
-                                    </div>
-                                    <div className="form-group-admin">
-                                        <label>Email Address</label>
-                                        <input type="email" className="admin-input-prime" placeholder="Email" value={editForm.email} onChange={e => setEditForm({ ...editForm, email: e.target.value })} />
-                                    </div>
-                                    <div className="form-group-admin">
-                                        <label>Phone Number</label>
-                                        <input type="text" className="admin-input-prime" placeholder="Phone" value={editForm.phone} onChange={e => setEditForm({ ...editForm, phone: e.target.value })} />
-                                    </div>
-                                    <div className="form-group-admin">
-                                        <label>Account Status</label>
-                                        <select className="admin-input-prime" value={editForm.status} onChange={e => setEditForm({ ...editForm, status: e.target.value })}>
-                                            <option value="Active">Active</option>
-                                            <option value="Inactive">Inactive</option>
-                                            <option value="Banned">Banned</option>
-                                        </select>
-                                    </div>
-                                    <div className="form-group-admin">
-                                        <label>DHT Token Balance</label>
-                                        <input type="number" className="admin-input-prime" placeholder="DHT amount" value={editForm.dhanki} onChange={e => setEditForm({ ...editForm, dhanki: e.target.value })} />
-                                    </div>
-                                    <div className="form-group-admin">
-                                        <label>Total Investment (₹)</label>
-                                        <input type="number" className="admin-input-prime" placeholder="Amount in INR" value={editForm.totalInvestment} onChange={e => setEditForm({ ...editForm, totalInvestment: e.target.value })} />
-                                    </div>
-                                    <div className="form-group-admin" style={{ gridColumn: '1 / -1' }}>
-                                        <label>Wallet Address</label>
-                                        <input type="text" className="admin-input-prime" placeholder="USDT/Crypto wallet address" value={editForm.walletAddress} onChange={e => setEditForm({ ...editForm, walletAddress: e.target.value })} />
-                                    </div>
-                                </div>
-                                <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-                                    <button className="btn-outline" style={{ flex: 1 }} onClick={() => setUserModal(null)}>Cancel</button>
-                                    <button className="btn-primary shimmer-btn" style={{ flex: 2 }} onClick={handleSaveUserEdit}>Commit Changes</button>
-                                </div>
-                            </>
-                        ) : (
-                            <div className="referrals-view">
-                                {/* User identity header */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px', padding: '14px', background: 'rgba(255,255,255,0.03)', borderRadius: '14px', border: '1px solid var(--admin-border)' }}>
-                                    <div className="admin-avatar" style={{ width: 44, height: 44, fontSize: '1.1rem', borderRadius: '12px' }}>{userModal.user?.name?.[0]}</div>
-                                    <div>
-                                        <p style={{ fontWeight: 800, fontSize: '1rem' }}>{userModal.user?.name}</p>
-                                        <p style={{ fontSize: '0.75rem', color: 'var(--admin-text-dim)' }}>ID: {userModal.user?.referralId} · {userModal.user?.email}</p>
-                                    </div>
-                                </div>
-
-                                {/* Upline */}
-                                <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-                                    <div style={{ display: 'inline-block', padding: '8px 20px', background: 'rgba(245,197,24,0.12)', borderRadius: '30px', border: '1px solid rgba(245,197,24,0.3)', fontSize: '0.8rem', fontWeight: 700, color: 'var(--admin-gold)' }}>
-                                        ↑ Referred By: {userModal.user?.referredBy || 'Direct Signup'}
-                                    </div>
-                                </div>
-
-                                {/* Tree connector line */}
-                                <div style={{ textAlign: 'center', color: 'var(--admin-border)', lineHeight: '1', fontSize: '1.2rem' }}>│</div>
-                                <div style={{ textAlign: 'center', marginBottom: '4px' }}>
-                                    <div style={{ display: 'inline-block', padding: '6px 18px', background: 'rgba(139,92,246,0.15)', borderRadius: '20px', border: '1px solid rgba(139,92,246,0.3)', fontSize: '0.78rem', fontWeight: 800, color: '#A78BFA' }}>
-                                        ● {userModal.user?.name} (This User)
-                                    </div>
-                                </div>
-
-                                {/* Network levels grid */}
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', margin: '16px 0' }}>
-                                    <div style={{ padding: '16px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '14px', textAlign: 'center', border: '1px solid rgba(139, 92, 246, 0.25)' }}>
-                                        <p style={{ fontSize: '0.65rem', color: '#A78BFA', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '6px' }}>LEVEL 1</p>
-                                        <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#C4B5FD' }}>{userModal.user?.referrals?.l1Count || 0}</p>
-                                        <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Direct Referrals</p>
-                                    </div>
-                                    <div style={{ padding: '16px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '14px', textAlign: 'center', border: '1px solid rgba(59, 130, 246, 0.25)' }}>
-                                        <p style={{ fontSize: '0.65rem', color: '#60A5FA', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '6px' }}>LEVEL 2</p>
-                                        <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#93C5FD' }}>{userModal.user?.referrals?.l2Count || 0}</p>
-                                        <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Sub-Referrals</p>
-                                    </div>
-                                    <div style={{ padding: '16px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '14px', textAlign: 'center', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
-                                        <p style={{ fontSize: '0.65rem', color: '#34D399', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '6px' }}>LEVEL 3</p>
-                                        <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#6EE7B7' }}>{userModal.user?.referrals?.l3Count || 0}</p>
-                                        <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Deep Network</p>
-                                    </div>
-                                </div>
-
-                                {/* Total network summary */}
-                                <div style={{ padding: '14px', background: 'rgba(255,255,255,0.03)', borderRadius: '14px', border: '1px solid var(--admin-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div>
-                                        <p style={{ fontSize: '0.78rem', color: 'var(--admin-text-dim)' }}>Total Network Size</p>
-                                        <p style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--admin-gold)' }}>
-                                            {((userModal.user?.referrals?.l1Count || 0) + (userModal.user?.referrals?.l2Count || 0) + (userModal.user?.referrals?.l3Count || 0)).toLocaleString()} Members
-                                        </p>
-                                    </div>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <p style={{ fontSize: '0.78rem', color: 'var(--admin-text-dim)' }}>Referral Code</p>
-                                        <p style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--admin-neon-blue)' }}>{userModal.user?.referralId}</p>
-                                    </div>
-                                </div>
-
-                                <button className="btn-outline" style={{ width: '100%', marginTop: '16px' }} onClick={() => setUserModal(null)}>Close View</button>
+            {
+                userModal && (
+                    <div className="sidebar-overlay" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setUserModal(null)}>
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} onClick={e => e.stopPropagation()} className="admin-content-card" style={{ width: '100%', maxWidth: userModal.type === 'referrals' ? '560px' : '620px', padding: '2.5rem', maxHeight: '90vh', overflowY: 'auto' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                <h3 style={{ margin: 0 }}>{userModal.type === 'edit' ? 'Commit User Overrides' : 'Network Hierarchy'}</h3>
+                                <button onClick={() => setUserModal(null)} className="icon-btn-utility"><X size={18} /></button>
                             </div>
-                        )}
-                    </motion.div>
-                </div>
-            )}
 
-            {proofImage && (
-                <div className="sidebar-overlay" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setProofImage(null)}>
-                    <div onClick={e => e.stopPropagation()} style={{ position: 'relative' }}>
-                        <img src={proofImage} alt="Payment Proof" style={{ maxWidth: '90vw', maxHeight: '90vh', borderRadius: '20px', border: '2px solid var(--admin-border)' }} />
-                        <button onClick={() => setProofImage(null)} style={{ position: 'absolute', top: -20, right: -20, background: 'var(--admin-danger)', color: 'white', border: 'none', borderRadius: '50%', width: 40, height: 40, cursor: 'pointer', fontWeight: 900 }}>X</button>
+                            {userModal.type === 'edit' ? (
+                                <>
+                                    <p style={{ color: 'var(--admin-text-dim)', fontSize: '0.85rem', marginBottom: '20px' }}>Modifying profile for <strong style={{ color: 'var(--admin-gold)' }}>{userModal.user?.name}</strong> · ID: {userModal.user?.referralId}</p>
+                                    <div className="admin-form-grid">
+                                        <div className="form-group-admin">
+                                            <label>Full Name</label>
+                                            <input type="text" className="admin-input-prime" placeholder="Full name" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} />
+                                        </div>
+                                        <div className="form-group-admin">
+                                            <label>Email Address</label>
+                                            <input type="email" className="admin-input-prime" placeholder="Email" value={editForm.email} onChange={e => setEditForm({ ...editForm, email: e.target.value })} />
+                                        </div>
+                                        <div className="form-group-admin">
+                                            <label>Phone Number</label>
+                                            <input type="text" className="admin-input-prime" placeholder="Phone" value={editForm.phone} onChange={e => setEditForm({ ...editForm, phone: e.target.value })} />
+                                        </div>
+                                        <div className="form-group-admin">
+                                            <label>Account Status</label>
+                                            <select className="admin-input-prime" value={editForm.status} onChange={e => setEditForm({ ...editForm, status: e.target.value })}>
+                                                <option value="Active">Active</option>
+                                                <option value="Inactive">Inactive</option>
+                                                <option value="Banned">Banned</option>
+                                            </select>
+                                        </div>
+                                        <div className="form-group-admin">
+                                            <label>DHT Token Balance</label>
+                                            <input type="number" className="admin-input-prime" placeholder="DHT amount" value={editForm.dhanki} onChange={e => setEditForm({ ...editForm, dhanki: e.target.value })} />
+                                        </div>
+                                        <div className="form-group-admin">
+                                            <label>Total Investment (₹)</label>
+                                            <input type="number" className="admin-input-prime" placeholder="Amount in INR" value={editForm.totalInvestment} onChange={e => setEditForm({ ...editForm, totalInvestment: e.target.value })} />
+                                        </div>
+                                        <div className="form-group-admin" style={{ gridColumn: '1 / -1' }}>
+                                            <label>Wallet Address</label>
+                                            <input type="text" className="admin-input-prime" placeholder="USDT/Crypto wallet address" value={editForm.walletAddress} onChange={e => setEditForm({ ...editForm, walletAddress: e.target.value })} />
+                                        </div>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
+                                        <button className="btn-outline" style={{ flex: 1 }} onClick={() => setUserModal(null)}>Cancel</button>
+                                        <button className="btn-primary shimmer-btn" style={{ flex: 2 }} onClick={handleSaveUserEdit}>Commit Changes</button>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="referrals-view">
+                                    {/* User identity header */}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px', padding: '14px', background: 'rgba(255,255,255,0.03)', borderRadius: '14px', border: '1px solid var(--admin-border)' }}>
+                                        <div className="admin-avatar" style={{ width: 44, height: 44, fontSize: '1.1rem', borderRadius: '12px' }}>{userModal.user?.name?.[0]}</div>
+                                        <div>
+                                            <p style={{ fontWeight: 800, fontSize: '1rem' }}>{userModal.user?.name}</p>
+                                            <p style={{ fontSize: '0.75rem', color: 'var(--admin-text-dim)' }}>ID: {userModal.user?.referralId} · {userModal.user?.email}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Upline */}
+                                    <div style={{ textAlign: 'center', marginBottom: '8px' }}>
+                                        <div style={{ display: 'inline-block', padding: '8px 20px', background: 'rgba(245,197,24,0.12)', borderRadius: '30px', border: '1px solid rgba(245,197,24,0.3)', fontSize: '0.8rem', fontWeight: 700, color: 'var(--admin-gold)' }}>
+                                            ↑ Referred By: {userModal.user?.referredBy || 'Direct Signup'}
+                                        </div>
+                                    </div>
+
+                                    {/* Tree connector line */}
+                                    <div style={{ textAlign: 'center', color: 'var(--admin-border)', lineHeight: '1', fontSize: '1.2rem' }}>│</div>
+                                    <div style={{ textAlign: 'center', marginBottom: '4px' }}>
+                                        <div style={{ display: 'inline-block', padding: '6px 18px', background: 'rgba(139,92,246,0.15)', borderRadius: '20px', border: '1px solid rgba(139,92,246,0.3)', fontSize: '0.78rem', fontWeight: 800, color: '#A78BFA' }}>
+                                            ● {userModal.user?.name} (This User)
+                                        </div>
+                                    </div>
+
+                                    {/* Network levels grid */}
+                                    <div className="admin-network-levels">
+                                        <div style={{ padding: '16px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '14px', textAlign: 'center', border: '1px solid rgba(139, 92, 246, 0.25)' }}>
+                                            <p style={{ fontSize: '0.65rem', color: '#A78BFA', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '6px' }}>LEVEL 1</p>
+                                            <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#C4B5FD' }}>{userModal.user?.referrals?.l1Count || 0}</p>
+                                            <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Direct Referrals</p>
+                                        </div>
+                                        <div style={{ padding: '16px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '14px', textAlign: 'center', border: '1px solid rgba(59, 130, 246, 0.25)' }}>
+                                            <p style={{ fontSize: '0.65rem', color: '#60A5FA', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '6px' }}>LEVEL 2</p>
+                                            <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#93C5FD' }}>{userModal.user?.referrals?.l2Count || 0}</p>
+                                            <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Sub-Referrals</p>
+                                        </div>
+                                        <div style={{ padding: '16px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '14px', textAlign: 'center', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
+                                            <p style={{ fontSize: '0.65rem', color: '#34D399', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '6px' }}>LEVEL 3</p>
+                                            <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#6EE7B7' }}>{userModal.user?.referrals?.l3Count || 0}</p>
+                                            <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Deep Network</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Total network summary */}
+                                    <div style={{ padding: '14px', background: 'rgba(255,255,255,0.03)', borderRadius: '14px', border: '1px solid var(--admin-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div>
+                                            <p style={{ fontSize: '0.78rem', color: 'var(--admin-text-dim)' }}>Total Network Size</p>
+                                            <p style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--admin-gold)' }}>
+                                                {((userModal.user?.referrals?.l1Count || 0) + (userModal.user?.referrals?.l2Count || 0) + (userModal.user?.referrals?.l3Count || 0)).toLocaleString()} Members
+                                            </p>
+                                        </div>
+                                        <div style={{ textAlign: 'right' }}>
+                                            <p style={{ fontSize: '0.78rem', color: 'var(--admin-text-dim)' }}>Referral Code</p>
+                                            <p style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--admin-neon-blue)' }}>{userModal.user?.referralId}</p>
+                                        </div>
+                                    </div>
+
+                                    <button className="btn-outline" style={{ width: '100%', marginTop: '16px' }} onClick={() => setUserModal(null)}>Close View</button>
+                                </div>
+                            )}
+                        </motion.div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+
+            {
+                proofImage && (
+                    <div className="sidebar-overlay" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setProofImage(null)}>
+                        <div onClick={e => e.stopPropagation()} style={{ position: 'relative' }}>
+                            <img src={proofImage} alt="Payment Proof" style={{ maxWidth: '90vw', maxHeight: '90vh', borderRadius: '20px', border: '2px solid var(--admin-border)' }} />
+                            <button onClick={() => setProofImage(null)} style={{ position: 'absolute', top: -20, right: -20, background: 'var(--admin-danger)', color: 'white', border: 'none', borderRadius: '50%', width: 40, height: 40, cursor: 'pointer', fontWeight: 900 }}>X</button>
+                        </div>
+                    </div>
+                )
+            }
+        </div >
     );
 };
 

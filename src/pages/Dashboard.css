@@ -476,6 +476,26 @@
         text-align: center;
         width: 100%;
     }
+
+    .referral-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .referral-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-info h1 {
+        font-size: 1.5rem;
+    }
+
+    .balance-amount {
+        font-size: 1.8rem;
+    }
 }
 
 /* Mini mode visibility */

@@ -522,6 +522,7 @@
     .withdrawal-header {
         flex-direction: column;
         align-items: stretch;
+        gap: 1.5rem;
     }
 
     .source-selection,
@@ -535,5 +536,24 @@
 
     .withdrawal-header h1 {
         font-size: 1.8rem;
+    }
+
+    .withdrawal-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .request-card,
+    .history-card {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .withdraw-stat-value {
+        font-size: 1.4rem;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
     }
 }

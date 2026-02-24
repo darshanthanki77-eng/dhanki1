@@ -514,15 +514,48 @@
     }
 
     .profile-side-card {
-        max-width: 450px;
-        margin: 0 auto;
+        max-width: 100%;
+        margin: 0;
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+    .profile-header-prime {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
 
-    .personal-info-grid-prime,
+    .personal-info-grid-prime {
+        grid-template-columns: 1fr;
+    }
+
     .security-settings-row {
         grid-template-columns: 1fr;
+    }
+
+    .details-card-prime {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .ref-link-copy-box {
+        flex-direction: column;
+        padding: 1.5rem;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .ref-link-copy-box .link-text {
+        text-align: center;
+    }
+
+    .ref-link-copy-box .btn-primary {
+        width: 100%;
+    }
+
+    .profile-header-prime h1 {
+        font-size: 1.8rem;
     }
 }

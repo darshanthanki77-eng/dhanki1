@@ -245,11 +245,12 @@
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .filter-tabs {
         overflow-x: auto;
         padding-bottom: 10px;
         margin-bottom: -5px;
+        -webkit-overflow-scrolling: touch;
     }
 
     .filter-tab {
@@ -259,5 +260,27 @@
     .transactions-table td,
     .transactions-table th {
         padding: 1rem;
+    }
+
+    .transactions-table th:nth-child(4),
+    .transactions-table td:nth-child(4),
+    .transactions-table th:nth-child(5),
+    .transactions-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .transactions-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .transactions-table td {
+        font-size: 0.8rem;
+    }
+
+    .type-badge {
+        padding: 2px 6px;
+        font-size: 0.7rem;
     }
 }
