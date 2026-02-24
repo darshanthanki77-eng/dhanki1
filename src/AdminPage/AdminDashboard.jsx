@@ -293,7 +293,7 @@ const AdminDashboard = () => {
                     <div className="logo-icon">
                         <ShieldCheck size={22} color="#000" />
                     </div>
-                    <span className="logo-text">DHANKI ADMIN</span>
+                    <span className="logo-text">DHANIK ADMIN</span>
                 </div>
 
                 <nav className="admin-nav">
