@@ -270,7 +270,7 @@ const AdminDashboard = () => {
     const adminStats = [
         { label: 'Total Platform Users', value: stats?.totalUsers || '0', icon: <Users size={22} />, trend: '+12.5%', color: '#F5C518', sparkColor: '#F5C518' },
         { label: 'Total Revenue (INR)', value: `₹${(stats?.revenue || 0).toLocaleString()}`, icon: <Wallet size={22} />, trend: '+8.2%', color: '#00E676', sparkColor: '#00E676' },
-        { label: 'Dhanki Sold', value: (stats?.tokenSold || 0).toLocaleString(), icon: <TrendingUp size={22} />, trend: '+24%', color: '#00E5FF', sparkColor: '#00E5FF' },
+        { label: 'Dhanik Sold', value: (stats?.tokenSold || 0).toLocaleString(), icon: <TrendingUp size={22} />, trend: '+24%', color: '#00E5FF', sparkColor: '#00E5FF' },
         { label: 'Platform Nodes', value: stats?.activeNodes || '0', icon: <ShieldCheck size={22} />, trend: 'Stable', color: '#FF4D4D', sparkColor: '#FF4D4D' }
     ];
 
