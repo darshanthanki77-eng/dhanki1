@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, Zap, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import API_BASE_URL from '../apiConfig';
+import logo from '../assets/DHANIK.png';
 import './Auth.css';
 
 const Login = () => {
@@ -59,9 +60,7 @@ const Login = () => {
             >
                 <div className="auth-header">
                     <div className="auth-logo">
-                        <div className="auth-logo-icon">
-                            <Zap size={24} fill="#05090C" />
-                        </div>
+                        <img src={logo} alt="DHANIK" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
                         <span className="auth-logo-text gold-glow-text">DHANIK</span>
                     </div>
                     <p>Welcome back! Securely login to your account.</p>

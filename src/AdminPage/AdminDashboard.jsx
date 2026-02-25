@@ -44,6 +44,7 @@ import {
 } from 'recharts';
 import './AdminDashboard.css';
 import API_BASE_URL from '../apiConfig';
+import logo from '../assets/DHANIK.png';
 
 // Animated Counter Component
 const CountUp = ({ value, duration = 1.5 }) => {
@@ -291,9 +292,7 @@ const AdminDashboard = () => {
 
             <aside className={`admin-sidebar ${isSidebarCollapsed ? 'sidebar-collapsed' : ''} ${isSidebarOpen ? 'sidebar-open' : ''}`}>
                 <div className="admin-logo">
-                    <div className="logo-icon">
-                        <ShieldCheck size={22} color="#000" />
-                    </div>
+                    <img src={logo} alt="DHANIK" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
                     <span className="logo-text">DHANIK ADMIN</span>
                     {window.innerWidth <= 1024 && (
                         <button

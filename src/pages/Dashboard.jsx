@@ -25,6 +25,7 @@ import {
 import './Dashboard.css';
 import API_BASE_URL from '../apiConfig';
 import BuyToken from './BuyToken';
+import logo from '../assets/DHANIK.png';
 import LevelIncome from './LevelIncome';
 import Support from './Support';
 import ReferralNetwork from './ReferralNetwork';
@@ -208,9 +209,7 @@ const Dashboard = () => {
                     {sidebarOpen ? <X size={20} /> : <ChevronRight size={20} />}
                 </div>
                 <div className="logo-section">
-                    <div className="logo-icon">
-                        <Zap size={24} fill="#05090C" />
-                    </div>
+                    <img src={logo} alt="DHANIK" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
                     <span className="logo-text gold-glow-text">DHANIK</span>
                 </div>
 
