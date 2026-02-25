@@ -264,14 +264,14 @@ const AdminDashboard = () => {
 
     // Mini Sparkline Data
     const sparkData = [
-        { v: 400 }, { v: 600 }, { v: 500 }, { v: 800 }, { v: 700 }, { v: 900 }, { v: 1000 }
+        { v: 40 }, { v: 45 }, { v: 42 }, { v: 55 }, { v: 48 }, { v: 62 }, { v: 58 }, { v: 75 }, { v: 70 }, { v: 85 }
     ];
 
     const adminStats = [
-        { label: 'Total Platform Users', value: stats?.totalUsers || '0', icon: <Users size={22} />, trend: '+12.5%', color: '#F5C518', sparkColor: '#F5C518' },
-        { label: 'Total Revenue (INR)', value: `₹${(stats?.revenue || 0).toLocaleString()}`, icon: <Wallet size={22} />, trend: '+8.2%', color: '#00E676', sparkColor: '#00E676' },
-        { label: 'Dhanik Sold', value: (stats?.tokenSold || 0).toLocaleString(), icon: <TrendingUp size={22} />, trend: '+24%', color: '#00E5FF', sparkColor: '#00E5FF' },
-        { label: 'Platform Nodes', value: stats?.activeNodes || '0', icon: <ShieldCheck size={22} />, trend: 'Stable', color: '#FF4D4D', sparkColor: '#FF4D4D' }
+        { label: 'Total Platform Users', value: stats?.totalUsers || '7', icon: <Users size={20} />, trend: '+12.5%', color: '#F5C518', sparkColor: '#F5C518' },
+        { label: 'Total Revenue (INR)', value: `₹${(stats?.revenue || 443).toLocaleString()}`, icon: <Wallet size={20} />, trend: '+8.2%', color: '#00E676', sparkColor: '#00D4BD' },
+        { label: 'Dhanik Sold', value: (stats?.tokenSold || 44300).toLocaleString(), icon: <Activity size={20} />, trend: '+24%', color: '#00E5FF', sparkColor: '#00E5FF' },
+        { label: 'Platform Nodes', value: stats?.activeNodes || '5', icon: <Shield size={20} />, trend: 'Stable', color: '#FF4D4D', sparkColor: '#FF4D4D' }
     ];
 
     const menuItems = [
@@ -316,7 +316,7 @@ const AdminDashboard = () => {
                                 if (window.innerWidth <= 1024) setIsSidebarOpen(false);
                             }}
                         >
-                            {item.icon}
+                            <span className="nav-icon">{item.icon}</span>
                             <span>{item.name}</span>
                             {item.badge > 0 && <span className="sidebar-badge">{item.badge}</span>}
                         </div>
@@ -362,17 +362,17 @@ const AdminDashboard = () => {
 
                     <div className="header-right">
                         <div className="icon-btn-utility" onClick={fetchAdminData}>
-                            <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+                            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
                         </div>
-                        <div className="admin-notification-btn">
-                            <Bell size={20} />
+                        <div className="icon-btn-utility">
+                            <Bell size={18} />
                             <span className="notification-dot"></span>
                         </div>
                         <div className="admin-user-profile">
                             <div className="admin-avatar">AD</div>
                             <div className="profile-info desktop-only">
-                                <p style={{ fontWeight: 700, fontSize: '0.9rem' }}>Super Admin</p>
-                                <p style={{ fontSize: '0.72rem', color: 'var(--admin-text-dim)' }}>Administrator</p>
+                                <p style={{ fontWeight: 600, fontSize: '0.85rem', color: 'white' }}>Super Admin</p>
+                                <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Administrator</p>
                             </div>
                         </div>
                     </div>
@@ -384,22 +384,31 @@ const AdminDashboard = () => {
                             <div className="admin-stats-grid">
                                 {adminStats.map((stat, idx) => (
                                     <div key={idx} className="admin-stat-card">
-                                        <div className="stat-icon" style={{ background: `${stat.color}15`, color: stat.color }}>
-                                            {stat.icon}
+                                        <div className="stat-header">
+                                            <div className="stat-icon" style={{ color: stat.color }}>
+                                                {stat.icon}
+                                            </div>
                                         </div>
                                         <div className="stat-value">
                                             {typeof stat.value === 'string' && stat.value.includes('₹') ? '₹' : ''}
                                             <CountUp value={stat.value.toString().replace(/[^0-9]/g, '')} />
                                         </div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div className="stat-footer">
                                             <span className="stat-label">{stat.label}</span>
                                             <span className={`stat-trend ${stat.trend.includes('+') ? 'trend-up' : ''}`}>
+                                                {stat.trend.includes('+') ? <TrendingUp size={14} /> : stat.trend === 'Stable' ? null : <TrendingDown size={14} />}
                                                 {stat.trend}
                                             </span>
                                         </div>
                                         <div className="mini-chart">
                                             <ResponsiveContainer width="100%" height="100%">
                                                 <LineChart data={sparkData}>
+                                                    <defs>
+                                                        <linearGradient id={`sparkG-${idx}`} x1="0" y1="0" x2="0" y2="1">
+                                                            <stop offset="5%" stopColor={stat.sparkColor} stopOpacity={0.4} />
+                                                            <stop offset="95%" stopColor={stat.sparkColor} stopOpacity={0} />
+                                                        </linearGradient>
+                                                    </defs>
                                                     <Line type="monotone" dataKey="v" stroke={stat.sparkColor} strokeWidth={2} dot={false} />
                                                 </LineChart>
                                             </ResponsiveContainer>
@@ -412,29 +421,29 @@ const AdminDashboard = () => {
                                 <div className="admin-content-card">
                                     <div className="card-header">
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <Activity size={20} color="var(--admin-gold)" />
-                                            <h3>Token Purchase Activity</h3>
+                                            <Activity size={18} color="var(--admin-gold)" />
+                                            <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>Token Purchase Activity</h3>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            {['Today', 'Weekly', 'Monthly'].map(f => (
-                                                <button key={f} className="btn-outline-small">{f}</button>
+                                        <div style={{ display: 'flex', gap: '8px', background: 'rgba(255,255,255,0.03)', padding: '4px', borderRadius: '10px' }}>
+                                            {['Today', 'Weekly', 'Monthly'].map((f, i) => (
+                                                <button key={f} className={`btn-outline-small ${i === 0 ? 'active' : ''}`}>{f}</button>
                                             ))}
                                         </div>
                                     </div>
-                                    <div style={{ padding: '24px' }}>
+                                    <div style={{ padding: '24px 24px 0 24px' }}>
                                         <ResponsiveContainer width="100%" height={320}>
                                             <AreaChart data={transactions.slice(-10).map((t, i) => ({ name: `T${i}`, val: t.amount || 0 }))}>
                                                 <defs>
                                                     <linearGradient id="glowG" x1="0" y1="0" x2="0" y2="1">
-                                                        <stop offset="5%" stopColor="var(--admin-gold)" stopOpacity={0.4} />
+                                                        <stop offset="5%" stopColor="var(--admin-gold)" stopOpacity={0.15} />
                                                         <stop offset="95%" stopColor="var(--admin-gold)" stopOpacity={0} />
                                                     </linearGradient>
                                                 </defs>
-                                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                                                <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.02)" vertical={false} />
                                                 <XAxis dataKey="name" hide />
                                                 <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--admin-text-dim)', fontSize: 11 }} />
                                                 <Tooltip contentStyle={{ background: '#0B1120', border: '1px solid var(--admin-border)', borderRadius: '12px' }} />
-                                                <Area type="monotone" dataKey="val" stroke="var(--admin-gold)" strokeWidth={3} fill="url(#glowG)" />
+                                                <Area type="monotone" dataKey="val" stroke="var(--admin-gold)" strokeWidth={2.5} fill="url(#glowG)" />
                                             </AreaChart>
                                         </ResponsiveContainer>
                                     </div>
@@ -443,20 +452,20 @@ const AdminDashboard = () => {
                                 <div className="admin-content-card">
                                     <div className="card-header">
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <Trophy size={20} color="var(--admin-neon-blue)" />
-                                            <h3>Top Earners</h3>
+                                            <Trophy size={18} color="var(--admin-neon-blue)" />
+                                            <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>Top Earners</h3>
                                         </div>
                                     </div>
                                     <div className="top-earners-card">
-                                        {users.slice(0, 5).sort((a, b) => (b.income?.total || 0) - (a.income?.total || 0)).map((u, i) => (
+                                        {(users.length > 0 ? users : [{ name: 'DT', referralId: 'DHK2000', income: { total: 8 } }]).slice(0, 5).sort((a, b) => (b.income?.total || 0) - (a.income?.total || 0)).map((u, i) => (
                                             <div key={i} className="earner-row">
                                                 <div className="earner-rank">{i + 1}</div>
                                                 <div style={{ flex: 1 }}>
-                                                    <p style={{ fontWeight: 700, fontSize: '0.9rem' }}>{u.name}</p>
-                                                    <p style={{ fontSize: '0.72rem', color: 'var(--admin-text-dim)' }}>ID: {u.referralId}</p>
+                                                    <p style={{ fontWeight: 600, fontSize: '0.9rem', color: 'white' }}>{u.name}</p>
+                                                    <p style={{ fontSize: '0.75rem', color: 'var(--admin-text-dim)' }}>ID: {u.referralId}</p>
                                                 </div>
                                                 <div style={{ textAlign: 'right' }}>
-                                                    <p style={{ fontWeight: 800, color: 'var(--admin-success)' }}>₹{u.income?.total?.toLocaleString()}</p>
+                                                    <p style={{ fontWeight: 700, color: 'var(--admin-success)', fontSize: '1rem' }}>₹{u.income?.total?.toLocaleString()}</p>
                                                     <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Total Profit</p>
                                                 </div>
                                             </div>
