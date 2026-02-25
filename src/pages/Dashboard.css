@@ -16,13 +16,14 @@
     padding: 2rem 1rem;
     display: flex;
     flex-direction: column;
-    z-index: 1001;
+    z-index: 10001;
+    /* Higher than overlay */
     width: 280px;
     box-shadow: 20px 0 50px rgba(0, 0, 0, 0.3);
     overflow: hidden;
-    background: var(--card-bg);
+    background: #0B1118;
+    /* Solid background for mobile visibility */
     backdrop-filter: var(--glass-blur);
-    /* Removed CSS transition to let Framer Motion handle it smoothly */
 }
 
 .sidebar.mini {
@@ -614,7 +615,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
-    z-index: 1000;
+    background: rgba(0, 0, 0, 0.4);
+    /* Less opaque to avoid 'black screen' feel */
+    backdrop-filter: blur(8px);
+    /* Stronger blur for premium look */
+    z-index: 10000;
+    /* Just below sidebar */
 }
