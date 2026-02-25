@@ -939,17 +939,17 @@ const AdminDashboard = () => {
                                     <div className="admin-network-levels">
                                         <div style={{ padding: '16px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '14px', textAlign: 'center', border: '1px solid rgba(139, 92, 246, 0.25)' }}>
                                             <p style={{ fontSize: '0.65rem', color: '#A78BFA', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '6px' }}>LEVEL 1</p>
-                                            <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#C4B5FD' }}>{userModal.user?.referrals?.l1Count || 0}</p>
+                                            <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#C4B5FD' }}>{userModal.user?.referrals?.l1Count ?? userModal.user?.referrals?.level1?.length ?? 0}</p>
                                             <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Direct Referrals</p>
                                         </div>
                                         <div style={{ padding: '16px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '14px', textAlign: 'center', border: '1px solid rgba(59, 130, 246, 0.25)' }}>
                                             <p style={{ fontSize: '0.65rem', color: '#60A5FA', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '6px' }}>LEVEL 2</p>
-                                            <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#93C5FD' }}>{userModal.user?.referrals?.l2Count || 0}</p>
+                                            <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#93C5FD' }}>{userModal.user?.referrals?.l2Count ?? userModal.user?.referrals?.level2?.length ?? 0}</p>
                                             <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Sub-Referrals</p>
                                         </div>
                                         <div style={{ padding: '16px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '14px', textAlign: 'center', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
                                             <p style={{ fontSize: '0.65rem', color: '#34D399', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '6px' }}>LEVEL 3</p>
-                                            <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#6EE7B7' }}>{userModal.user?.referrals?.l3Count || 0}</p>
+                                            <p style={{ fontSize: '1.8rem', fontWeight: 900, color: '#6EE7B7' }}>{userModal.user?.referrals?.l3Count ?? userModal.user?.referrals?.level3?.length ?? 0}</p>
                                             <p style={{ fontSize: '0.7rem', color: 'var(--admin-text-dim)' }}>Deep Network</p>
                                         </div>
                                     </div>
@@ -959,7 +959,9 @@ const AdminDashboard = () => {
                                         <div>
                                             <p style={{ fontSize: '0.78rem', color: 'var(--admin-text-dim)' }}>Total Network Size</p>
                                             <p style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--admin-gold)' }}>
-                                                {((userModal.user?.referrals?.l1Count || 0) + (userModal.user?.referrals?.l2Count || 0) + (userModal.user?.referrals?.l3Count || 0)).toLocaleString()} Members
+                                                {((userModal.user?.referrals?.l1Count ?? userModal.user?.referrals?.level1?.length ?? 0) +
+                                                    (userModal.user?.referrals?.l2Count ?? userModal.user?.referrals?.level2?.length ?? 0) +
+                                                    (userModal.user?.referrals?.l3Count ?? userModal.user?.referrals?.level3?.length ?? 0)).toLocaleString()} Members
                                             </p>
                                         </div>
                                         <div style={{ textAlign: 'right' }}>
